@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 export class AuthGuard implements CanActivate {
 // Replace this with your real auth service
 private isLoggedIn() { 
-    return !!localStorage.getItem('token'); 
+    return true; 
 }
 
 

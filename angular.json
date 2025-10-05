@@ -64,8 +64,7 @@
               "buildTarget": "banking-ui:build:production"
             },
             "development": {
-              "buildTarget": "banking-ui:build:development",
-               "proxyConfig": "proxy.conf.json"
+              "buildTarget": "banking-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
