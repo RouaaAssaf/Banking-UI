@@ -1,0 +1,65 @@
+.dashboard-container {
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1e1e2f;
+  color: white;
+
+  .mat-list-item {
+    border-radius: 8px;
+    margin: 4px 8px;
+    &:hover {
+      background-color: #343454;
+    }
+  }
+
+  .logo h2 {
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dashboard-content {
+  padding: 20px;
+
+  .cards-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .dashboard-card {
+      flex: 1 1 200px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.3s;
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  .charts-container {
+    margin-top: 30px;
+  }
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

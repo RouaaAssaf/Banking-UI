@@ -1,0 +1,19 @@
+<mat-card>
+  <!-- Search by Account ID -->
+  <app-transaction-search (accountSelected)="onCustomerSelected($event)"></app-transaction-search>
+</mat-card>
+
+<!-- Show summary only if a customer is selected -->
+<app-customer-summary
+  *ngIf="selectedCustomerId"
+  [customerId]="selectedCustomerId"
+  [accountId]="selectedAccountId"
+  (accountClicked)="onAccountSelected($event)">
+</app-customer-summary>
+
+<!-- Add transaction button -->
+<div *ngIf="selectedCustomerId && selectedAccountId" class="add-transaction-btn">
+  <button mat-raised-button color="primary" (click)="openAddTransactionDialog()">
+    Add Transaction
+  </button>
+</div>

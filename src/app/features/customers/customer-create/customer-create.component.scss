@@ -1,0 +1,40 @@
+.create-customer-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.customer-card {
+  width: 420px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+
+  mat-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    mat-icon {
+      color: #1976d2;
+      font-size: 28px;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .status-message {
+    margin-top: 15px;
+    text-align: center;
+    color: #444;
+    font-size: 14px;
+  }
+}

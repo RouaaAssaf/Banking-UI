@@ -1,0 +1,38 @@
+<!-- Account Card -->
+<mat-card *ngIf="!loading && account">
+  <mat-card-header>
+    <mat-card-title>{{ account.firstName }} {{ account.lastName }}</mat-card-title>
+    <mat-card-subtitle>Account ID: {{ account.accountId }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p><strong>Customer ID:</strong> {{ account.customerId }}</p>
+    <p><strong>Balance:</strong> {{ account.balance | currencyFormat:'$' }}</p>
+    <p><strong>Opened At:</strong> {{ account.openedAt | date:'medium' }}</p>
+
+    <h3 class="mt-4">Recent Transactions</h3>
+    <mat-list *ngIf="account.transactions?.length > 0; else noTx">
+      <mat-list-item *ngFor="let tx of account.transactions">
+        <mat-icon matListIcon [style.color]="tx.transactionType | transactionColor">
+          {{ tx.transactionType | transactionIcon }}
+        </mat-icon>
+        <div matLine>
+          <strong>{{ tx.amount | currencyFormat:'$' }}</strong> - {{ tx.description }}
+        </div>
+        <div matLine>{{ tx.createdAt | date:'short' }}</div>
+      </mat-list-item>
+    </mat-list>
+    <ng-template #noTx>
+      <p>No transactions yet.</p>
+    </ng-template>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="openAddTransactionDialog(account.accountId)">
+      <mat-icon>add</mat-icon> Add Transaction
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<!-- Loading Spinner -->
+<mat-spinner *ngIf="loading" class="center-spinner"></mat-spinner>

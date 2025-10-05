@@ -1,0 +1,14 @@
+{
+  "/api/customers": {
+    "target": "https://localhost:44365",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/accounts": {
+    "target": "https://localhost:44394",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

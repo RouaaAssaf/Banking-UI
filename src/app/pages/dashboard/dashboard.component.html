@@ -1,0 +1,69 @@
+<mat-sidenav-container class="dashboard-container">
+  <!-- Sidebar -->
+  <mat-sidenav mode="side" opened class="sidebar">
+    <div class="logo">
+      <h2>🏦 Mini Banking</h2>
+    </div>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/customers/create" routerLinkActive="active">
+        <mat-icon>person_add</mat-icon>
+        <span>Create Customer</span>
+      </a>
+      <a mat-list-item routerLink="/accounts" routerLinkActive="active">
+        <mat-icon>account_balance</mat-icon>
+        <span>Accounts</span>
+      </a>
+      <a mat-list-item routerLink="/transactions" routerLinkActive="active">
+        <mat-icon>list_alt</mat-icon>
+        <span>Transactions</span>
+      </a>
+      <a mat-list-item [routerLink]="['/summary', 123]" routerLinkActive="active">
+        <mat-icon>insights</mat-icon>
+        <span>Summary</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main content -->
+  <mat-sidenav-content>
+    <!-- Topbar -->
+    <mat-toolbar color="primary" class="topbar">
+      <span class="app-title">Mini Banking Dashboard</span>
+      <span class="spacer"></span>
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <div class="cards-container">
+        <mat-card class="dashboard-card">
+          <mat-card-title>Total Customers</mat-card-title>
+          <mat-card-content>
+            <h2>125</h2>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card">
+          <mat-card-title>Total Accounts</mat-card-title>
+          <mat-card-content>
+            <h2>87</h2>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card">
+          <mat-card-title>Transactions Today</mat-card-title>
+          <mat-card-content>
+            <h2>42</h2>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="charts-container">
+        <!-- Here you can embed a chart component -->
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
