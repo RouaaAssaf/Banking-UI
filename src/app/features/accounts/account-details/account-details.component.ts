@@ -29,9 +29,7 @@ import { AccountCardComponent } from '../account-card/account-card.component';
     MatProgressSpinnerModule,
     TransactionIconPipe,  
     TransactionColorPipe , 
-    CurrencyFormatPipe,
-    FilterTransactionsPipe,
-    AccountCardComponent
+    CurrencyFormatPipe
   ],
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss']
