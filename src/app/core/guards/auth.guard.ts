@@ -1,24 +1,21 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { CanActivate, Router } from '@angular/router';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthGuard implements CanActivate {
-// Replace this with your real auth service
-private isLoggedIn() { 
-    return true; 
-}
 
+  constructor(private router: Router) {}
 
-constructor(private router: Router) {}
+  canActivate(): boolean {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
 
-
-canActivate(): Observable<boolean | UrlTree> {
-const ok = this.isLoggedIn();
-if (!ok) {
-return of(this.router.parseUrl('/login'));
-}
-return of(true);
-}
+    if (!isLoggedIn) {
+      // 🧠 'replaceUrl: true' prevents back button from returning to protected routes
+      this.router.navigate(['/login'], { replaceUrl: true });
+      return false;
+    }
+    return true;
+  }
 }

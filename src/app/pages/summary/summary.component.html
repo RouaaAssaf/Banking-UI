@@ -1,0 +1,51 @@
+<!-- src/app/pages/admin-summary/admin-summary.component.html -->
+<div class="summary">
+
+  <h2>Admin Customer Summary</h2>
+
+  <!-- Customer Dropdown -->
+  <div class="customer-selector">
+    <label>Select Customer:</label>
+    <select [(ngModel)]="selectedCustomerId" (change)="onCustomerChange()">
+      <option [value]="null">-- Select Customer --</option>
+      <option *ngFor="let c of customers" [value]="c.customerId">
+        {{ c.firstName }} {{ c.lastName }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="loading">Loading summary...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <!-- Customer Summary -->
+  <div *ngIf="summary">
+    <h3>{{ summary.firstName }} {{ summary.lastName }} ({{ summary.customerId }})</h3>
+
+    <div *ngFor="let account of summary.accounts" class="account-card">
+      <h4>Account: {{ account.accountId }}</h4>
+      <p>Balance: {{ account.balance | currency }}</p>
+      <p>Opened At: {{ account.openedAt | date:'short' }}</p>
+
+      <h5>Transactions:</h5>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of account.transactions">
+            <td>{{ tx.transactionType }}</td>
+            <td>{{ tx.amount | currency }}</td>
+            <td>{{ tx.description }}</td>
+            <td>{{ tx.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

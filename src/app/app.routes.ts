@@ -6,21 +6,27 @@ import { TransactionAddComponent } from './features/transactions/transaction-add
 import { CustomerSummaryComponent } from './features/customers/customer-summary/customer-summary.component';
 import { TransactionsComponent } from './features/transactions/transaction/transaction.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { SummaryComponent } from './pages/summary/summary.component'; 
 
 export const routes: Routes = [
+ 
   {
     path: '',
     component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [
+   
       { path: 'customers/create', component: CustomerCreateComponent },
       { path: 'customer-accounts/:customerId', component: AccountDetailsComponent },
-      { path: 'transactions', component: TransactionsComponent }, 
+      { path: 'transactions', component: TransactionsComponent },
       { path: 'transactions/add/:customerId', component: TransactionAddComponent },
+      { path: 'summary', component: SummaryComponent }, 
       { path: 'summary/:customerId', component: CustomerSummaryComponent },
-      { path: 'accounts/:accountId', component: AccountDetailsComponent},
+      { path: 'accounts/:accountId', component: AccountDetailsComponent },
       { path: '', redirectTo: 'customers/create', pathMatch: 'full' }
     ]
   },
-  { path: '**', redirectTo: '' } // fallback route
+
+  
+  { path: '**', redirectTo: '' }
 ];

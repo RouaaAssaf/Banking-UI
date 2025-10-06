@@ -20,4 +20,10 @@ export class TransactionService {
   addTransaction(accountId: string, tx: TransactionRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/${accountId}/transaction`, tx);
   }
+
+  getTransactionsToday() {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  return this.http.get<any[]>(`api/transactions?date=${today}`);
+}
+
 }

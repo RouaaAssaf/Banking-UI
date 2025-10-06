@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Customer } from '../../models/customer.model';
 import { environment } from '../../../environments/environment';
 
@@ -20,7 +21,17 @@ export class CustomerService {
     return this.http.get<any>(`${this.apiUrl}/by-email/${email}`);
   }
 
-  getAll(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiUrl);
-  }
+ getAll(): Observable<Customer[]> {
+  return this.http.get<any[]>(this.apiUrl).pipe(
+    map(res =>
+      res.map(c => ({
+        customerId: c.CustomerId,
+        firstName: c.FirstName,
+        lastName: c.LastName,
+        email: c.Email
+      }))
+    )
+  );
+}
+
 }

@@ -39,6 +39,11 @@ export class AccountService {
     return this.http.post(`${this.apiUrl}/${accountId}/transaction`, request);
   }
 
+  getAllAccounts() {
+  return this.http.get<any[]>('api/accounts');
+}
+
+
   getAccountById(accountId: string) {
   return this.http.get<any>(`api/accounts/${accountId}`).pipe(
     map(acc => ({
