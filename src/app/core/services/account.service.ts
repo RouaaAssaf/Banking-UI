@@ -40,12 +40,12 @@ export class AccountService {
   }
 
   getAllAccounts() {
-  return this.http.get<any[]>('api/accounts');
+  return this.http.get<any[]>(`${this.apiUrl}`);
 }
 
 
   getAccountById(accountId: string) {
-  return this.http.get<any>(`api/accounts/${accountId}`).pipe(
+  return this.http.get<any>(`${this.apiUrl}/${accountId}`).pipe(
     map(acc => ({
       accountId: acc.AccountId,
       customerId: acc.CustomerId,

@@ -15,7 +15,7 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [
-   
+      
       { path: 'customers/create', component: CustomerCreateComponent },
       { path: 'customer-accounts/:customerId', component: AccountDetailsComponent },
       { path: 'transactions', component: TransactionsComponent },
