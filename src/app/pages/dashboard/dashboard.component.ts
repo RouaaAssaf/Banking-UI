@@ -7,8 +7,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 
 import { DashboardService } from '../../core/services/dashboard.service';
+
+export interface DashboardSummary {
+  TotalCustomers: number;
+  TotalAccounts: number;
+  TransactionsToday: number;
+  ActiveCustomers: number;
+  PendingTransactions: number;
+  AlertAccounts: number;
+  DailyTransactionGoal: number;
+  VerifiedAccounts: number;
+}
+
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +36,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
     MatListModule,
     MatButtonModule,
     MatCardModule,
+    MatTableModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -34,32 +48,60 @@ export class DashboardComponent implements OnInit {
   totalAccounts = 0;
   transactionsToday = 0;
 
+  // NEW middle metrics
+  activeCustomers = 0;
+  pendingTransactions = 0;
+  alertAccounts = 0;
+  dailyTransactionGoal = 0;
+  verifiedAccounts = 0;
+
+  recentTransactions: any[] = [];
+  topAccounts: any[] = [];
+  transactionChartLabels: string[] = [];
+  transactionChartData: { datasets: { data: number[], label: string }[]; labels: string[] } = { datasets: [], labels: [] };
+
   loading = true;
   error: string | null = null;
 
   constructor(private router: Router, private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    this.adminName = localStorage.getItem('adminName');
-    this.loadDashboard();
+  const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+  if (!isLoggedIn) {
+    this.router.navigate(['/login'], { replaceUrl: true });
+    return;
   }
+
+  this.adminName = localStorage.getItem('adminName');
+  this.loadDashboard();
+}
+
+
 
   private loadDashboard(): void {
     this.loading = true;
     this.error = null;
 
     this.dashboardService.getDashboardData().subscribe({
-      next: data => {
-        this.totalCustomers = data.totalCustomers ?? 0;
-        this.totalAccounts = data.totalAccounts ?? 0;
-        this.transactionsToday = data.transactionsToday ?? 0;
+      next: (data: DashboardSummary) => {
+        // Top cards
+        this.totalCustomers = data.TotalCustomers ?? 0;
+        this.totalAccounts = data.TotalAccounts ?? 0;
+        this.transactionsToday = data.TransactionsToday ?? 0;
+
+        // Middle metrics
+        this.activeCustomers = data.ActiveCustomers ?? 0;
+        this.pendingTransactions = data.PendingTransactions ?? 0;
+        this.alertAccounts = data.AlertAccounts ?? 0;
+        this.dailyTransactionGoal = data.DailyTransactionGoal ?? 0;
+        this.verifiedAccounts = data.VerifiedAccounts ?? 0;
+
         this.loading = false;
       },
-      error: err => {
-        console.error('Failed to load dashboard data', err);
-        this.error = 'Failed to load dashboard data';
-        this.loading = false;
-      }
+      error: () => {
+       this.error = 'Failed to load dashboard';
+       this.loading = false; // stop spinner even on error
+     }   
     });
   }
 

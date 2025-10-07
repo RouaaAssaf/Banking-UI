@@ -68,6 +68,56 @@
         <!-- Here you can embed a chart component -->
       </div>
 
+      <div class="middle-section">
+  <div class="middle-cards-container">
+
+    <!-- Active vs Inactive Customers -->
+    <mat-card class="middle-card">
+      <mat-card-title>Active vs Inactive Customers</mat-card-title>
+      <mat-card-content>
+        <div class="progress-container">
+          <div class="progress-bar active" [style.width.%]="(activeCustomers / totalCustomers) * 100">
+            {{ activeCustomers }} Active
+          </div>
+          <div class="progress-bar inactive" [style.width.%]="(totalCustomers - activeCustomers) / totalCustomers * 100">
+            {{ totalCustomers - activeCustomers }} Inactive
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Daily Transaction Goal -->
+    <mat-card class="middle-card">
+      <mat-card-title>Daily Transaction Goal</mat-card-title>
+      <mat-card-content>
+        <div class="circular-progress">
+          <div class="circle">
+            <div class="mask full">
+              <div class="fill" [style.transform]="'rotate(' + (transactionsToday / dailyTransactionGoal * 180) + 'deg)'"></div>
+            </div>
+            <div class="mask half">
+              <div class="fill" [style.transform]="'rotate(' + (transactionsToday / dailyTransactionGoal * 180) + 'deg)'"></div>
+            </div>
+            <div class="inside-circle">
+              {{ transactionsToday }}/{{ dailyTransactionGoal }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Pending Transactions -->
+    <mat-card class="middle-card">
+      <mat-card-title>Pending Transactions</mat-card-title>
+      <mat-card-content>
+        <h2>{{ pendingTransactions }}</h2>
+        <mat-icon color="warn">pending_actions</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
+
       <!-- Routed Components -->
       <router-outlet></router-outlet>
     </div>

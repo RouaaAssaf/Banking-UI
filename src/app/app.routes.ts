@@ -7,26 +7,29 @@ import { CustomerSummaryComponent } from './features/customers/customer-summary/
 import { TransactionsComponent } from './features/transactions/transaction/transaction.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { SummaryComponent } from './pages/summary/summary.component'; 
+import { LoginComponent } from './pages/login/login.component';
+
 
 export const routes: Routes = [
- 
+   { path: 'login', component: LoginComponent },
+
   {
     path: '',
-    component: DashboardComponent,
+    component: DashboardComponent, 
     canActivate: [AuthGuard],
     children: [
+      
       { path: 'dashboard-home', component: DashboardComponent },
       { path: 'customers/create', component: CustomerCreateComponent },
       { path: 'customer-accounts/:customerId', component: AccountDetailsComponent },
       { path: 'transactions', component: TransactionsComponent },
       { path: 'transactions/add/:customerId', component: TransactionAddComponent },
-      { path: 'summary', component: SummaryComponent }, 
+      { path: 'summary', component: SummaryComponent },
       { path: 'summary/:customerId', component: CustomerSummaryComponent },
       { path: 'accounts/:accountId', component: AccountDetailsComponent },
-      
     ]
   },
 
-  
   { path: '**', redirectTo: '' }
 ];
+
