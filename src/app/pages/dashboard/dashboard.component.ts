@@ -22,7 +22,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
     MatIconModule,
     MatListModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']

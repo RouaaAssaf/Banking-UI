@@ -1,38 +1,52 @@
-<!-- Account Card -->
-<mat-card *ngIf="!loading && account">
-  <mat-card-header>
-    <mat-card-title>{{ account.firstName }} {{ account.lastName }}</mat-card-title>
-    <mat-card-subtitle>Account ID: {{ account.accountId }}</mat-card-subtitle>
-  </mat-card-header>
+<div class="account-details-container" *ngIf="!loading && account">
+  <!-- Account Header Card -->
+  <mat-card class="account-header-card">
+    <mat-card-title>Account Details</mat-card-title>
+    <mat-card-subtitle>
+      <div class="info-line"><strong>Account ID:</strong> {{ account.accountId }}</div>
+      <div class="info-line"><strong>Customer:</strong> {{ account.firstName }} {{ account.lastName }}</div>
+      <div class="info-line"><strong>Opened At:</strong> {{ account.openedAt | date:'mediumDate' }}</div>
+    </mat-card-subtitle>
 
-  <mat-card-content>
-    <p><strong>Customer ID:</strong> {{ account.customerId }}</p>
-    <p><strong>Balance:</strong> {{ account.balance | currencyFormat:'$' }}</p>
-    <p><strong>Opened At:</strong> {{ account.openedAt | date:'medium' }}</p>
+    <div class="balance">
+      <h2>Balance</h2>
+      <h1 [class.positive]="account.balance >= 0" [class.negative]="account.balance < 0">
+        {{ account.balance | currency:'USD' }}
+      </h1>
+    </div>
 
-    <h3 class="mt-4">Recent Transactions</h3>
-    <mat-list *ngIf="account.transactions?.length > 0; else noTx">
+    <button mat-raised-button color="primary" class="add-btn" (click)="openAddTransactionDialog(account.accountId)">
+      <mat-icon>add</mat-icon>
+      Add Transaction
+    </button>
+  </mat-card>
+
+  <!-- Transactions Section -->
+  <mat-card class="transactions-card">
+    <mat-card-title>Recent Transactions</mat-card-title>
+
+    <mat-list *ngIf="account.transactions?.length; else noTx">
       <mat-list-item *ngFor="let tx of account.transactions">
-        <mat-icon matListIcon [style.color]="tx.transactionType | transactionColor">
-          {{ tx.transactionType | transactionIcon }}
+        <mat-icon matListIcon [color]="tx.transactionType === 'Credit' ? 'primary' : 'warn'">
+          {{ tx.transactionType === 'Credit' ? 'arrow_downward' : 'arrow_upward' }}
         </mat-icon>
         <div matLine>
-          <strong>{{ tx.amount | currencyFormat:'$' }}</strong> - {{ tx.description }}
+          {{ tx.description }} – {{ tx.amount | currency:'USD' }}
         </div>
-        <div matLine>{{ tx.createdAt | date:'short' }}</div>
+        <div matLine class="tx-date">
+          {{ tx.transactionType }} • {{ tx.createdAt | date:'short' }}
+        </div>
       </mat-list-item>
     </mat-list>
-    <ng-template #noTx>
-      <p>No transactions yet.</p>
-    </ng-template>
-  </mat-card-content>
 
-  <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="openAddTransactionDialog(account.accountId)">
-      <mat-icon>add</mat-icon> Add Transaction
-    </button>
-  </mat-card-actions>
-</mat-card>
+    <ng-template #noTx>
+      <p class="no-transactions">No transactions found for this account.</p>
+    </ng-template>
+  </mat-card>
+</div>
 
 <!-- Loading Spinner -->
-<mat-spinner *ngIf="loading" class="center-spinner"></mat-spinner>
+<div class="loading" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+  <p>Loading account details...</p>
+</div>

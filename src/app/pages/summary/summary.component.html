@@ -1,12 +1,11 @@
-<!-- src/app/pages/admin-summary/admin-summary.component.html -->
-<div class="summary">
+<div class="summary-container">
 
-  <h2>Admin Customer Summary</h2>
+  <h2 class="page-title"> Customer Summary</h2>
 
   <!-- Customer Dropdown -->
   <div class="customer-selector">
-    <label>Select Customer:</label>
-    <select [(ngModel)]="selectedCustomerId" (change)="onCustomerChange()">
+    <label for="customerSelect">Select Customer:</label>
+    <select id="customerSelect" [(ngModel)]="selectedCustomerId" (change)="onCustomerChange()">
       <option [value]="null">-- Select Customer --</option>
       <option *ngFor="let c of customers" [value]="c.customerId">
         {{ c.firstName }} {{ c.lastName }}
@@ -14,38 +13,60 @@
     </select>
   </div>
 
-  <div *ngIf="loading">Loading summary...</div>
+  <!-- Loading and Error -->
+  <div *ngIf="loading" class="loading">Loading summary...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
   <!-- Customer Summary -->
-  <div *ngIf="summary">
-    <h3>{{ summary.firstName }} {{ summary.lastName }} ({{ summary.customerId }})</h3>
+  <div *ngIf="summary" class="customer-summary">
 
-    <div *ngFor="let account of summary.accounts" class="account-card">
-      <h4>Account: {{ account.accountId }}</h4>
-      <p>Balance: {{ account.balance | currency }}</p>
-      <p>Opened At: {{ account.openedAt | date:'short' }}</p>
-
-      <h5>Transactions:</h5>
-      <table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let tx of account.transactions">
-            <td>{{ tx.transactionType }}</td>
-            <td>{{ tx.amount | currency }}</td>
-            <td>{{ tx.description }}</td>
-            <td>{{ tx.createdAt | date:'short' }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Customer Info Card -->
+    <div class="customer-card">
+      <h3>{{ summary.firstName }} {{ summary.lastName }}</h3>
+      <p class="customer-id">Customer ID: {{ summary.customerId }}</p>
     </div>
-  </div>
 
+    <!-- Accounts -->
+    <div class="accounts">
+      <div *ngFor="let account of summary.accounts" class="account-card">
+        <div class="account-header">
+          <h4>Account: {{ account.accountId }}</h4>
+          <p>Opened At: {{ account.openedAt | date:'medium' }}</p>
+        </div>
+
+        <div class="balance">
+          <strong>Balance:</strong>
+          <span [class.positive]="account.balance >= 0" [class.negative]="account.balance < 0">
+            {{ account.balance | currency }}
+          </span>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="transactions">
+          <h5>Transactions</h5>
+          <table class="transaction-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tx of account.transactions">
+                <td [class.credit]="tx.transactionType==='Credit'" [class.debit]="tx.transactionType==='Debit'">
+                  {{ tx.transactionType }}
+                </td>
+                <td>{{ tx.amount | currency }}</td>
+                <td>{{ tx.description }}</td>
+                <td>{{ tx.createdAt | date:'short' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>

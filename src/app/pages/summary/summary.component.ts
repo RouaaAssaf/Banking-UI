@@ -8,6 +8,7 @@ import { CustomerSummary, Customer } from '../../../app/models/customer.model';
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.component.html',
+  styleUrls: ['./summary.component.scss'],
   
   standalone: true,
   imports: [

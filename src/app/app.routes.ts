@@ -15,7 +15,7 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [
-      
+      { path: 'dashboard-home', component: DashboardComponent },
       { path: 'customers/create', component: CustomerCreateComponent },
       { path: 'customer-accounts/:customerId', component: AccountDetailsComponent },
       { path: 'transactions', component: TransactionsComponent },
@@ -23,7 +23,7 @@ export const routes: Routes = [
       { path: 'summary', component: SummaryComponent }, 
       { path: 'summary/:customerId', component: CustomerSummaryComponent },
       { path: 'accounts/:accountId', component: AccountDetailsComponent },
-      { path: '', redirectTo: 'customers/create', pathMatch: 'full' }
+      
     ]
   },
 
