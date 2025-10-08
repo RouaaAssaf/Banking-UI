@@ -39,6 +39,8 @@ export class AccountDetailsComponent implements OnInit {
   accountId!: string | null;
   account: any;
   loading = false;
+  errorMessage: string | null = null;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -63,35 +65,47 @@ export class AccountDetailsComponent implements OnInit {
 
 
   loadAccountByCustomer() {
-    this.loading = true;
-    this.accountService.getCustomerSummary(this.customerId!).subscribe({
-      next: (summary: any) => {
-        if (summary?.accounts?.length > 0) {
-          this.account = summary.accounts[0]; // assuming 1 account per customer
-        }
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error loading account summary', err);
-        this.loading = false;
-      }
-    });
-  }
-
-  loadAccountByAccountId() {
   this.loading = true;
-  this.accountService.getAccountById(this.accountId!).subscribe({
-    next: acc => {
-      this.account = acc;
-      console.log('Loaded account:', acc); // 👀 check if it has firstName, lastName, etc.
+  this.errorMessage = null;
+
+  this.accountService.getCustomerSummary(this.customerId!).subscribe({
+    next: summary => {
+      if (summary?.accounts?.length > 0) {
+        this.account = summary.accounts[0];
+      }
       this.loading = false;
     },
     error: err => {
-      console.error('Error fetching account', err);
+      console.error('Error loading account summary', err);
+
+      if (err.error?.Message) {
+        this.errorMessage = err.error.Message;
+      } else {
+        this.errorMessage = 'Failed to load account summary';
+      }
+
       this.loading = false;
     }
   });
 }
+
+ loadAccountByAccountId() {
+  this.loading = true;
+  this.errorMessage = null;
+
+  this.accountService.getAccountById(this.accountId!).subscribe({
+    next: acc => {
+      this.account = acc;
+      this.loading = false;
+    },
+    error: err => {
+      this.loading = false;
+      this.errorMessage = err.message; // always shows JSON error from backend
+    }
+  });
+}
+
+
   openAddTransactionDialog(accountId: string) {
     const dialogRef = this.dialog.open(TransactionAddComponent, {
       width: '400px',

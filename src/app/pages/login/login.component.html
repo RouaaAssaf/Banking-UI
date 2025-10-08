@@ -1,0 +1,45 @@
+<div class="login-wrapper">
+  <!-- Animated background -->
+  <ul class="background-shapes">
+    <li></li><li></li><li></li><li></li><li></li>
+  </ul>
+
+  <!-- Login Card -->
+  <mat-card class="login-card">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Bank Logo" />
+      <h2>Banking Admin Portal</h2>
+      <p class="subtitle">Secure access for administrators</p>
+    </div>
+
+    <form (ngSubmit)="login()" autocomplete="off">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" placeholder="Enter username" required />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter password"
+          required
+        />
+        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="login-btn" type="submit">
+        <mat-icon>login</mat-icon>
+        Login In
+      </button>
+
+      <p class="footer-text">© {{ currentYear }} YourBank. All rights reserved.</p>
+    </form>
+  </mat-card>
+</div>

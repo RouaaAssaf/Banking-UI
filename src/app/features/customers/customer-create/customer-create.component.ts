@@ -16,7 +16,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-customer-create',
   standalone: true,
   imports: [
-   CommonModule,
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -24,7 +24,6 @@ import { firstValueFrom } from 'rxjs';
     MatCardModule,
     MatIconModule,
     MatProgressBarModule
-  
   ],
   templateUrl: './customer-create.component.html',
   styleUrls: ['./customer-create.component.scss']
@@ -48,8 +47,22 @@ export class CustomerCreateComponent {
   }
 
   async submit() {
-    if (this.form.invalid) return;
+    // Mark all fields as touched to show validation errors
+    this.form.markAllAsTouched();
 
+    // Frontend validation
+    if (this.form.invalid) {
+      const errors = [];
+      if (this.form.get('firstName')?.hasError('required')) errors.push('First Name is required');
+      if (this.form.get('lastName')?.hasError('required')) errors.push('Last Name is required');
+      if (this.form.get('email')?.hasError('required')) errors.push('Email is required');
+      if (this.form.get('email')?.hasError('email')) errors.push('Please enter a valid email');
+
+      this.message = errors.join('. '); // Show all frontend validation errors
+      return;
+    }
+
+    // Backend request
     this.loading = true;
     this.message = 'Creating customer...';
     const customer = this.form.value;
@@ -57,10 +70,8 @@ export class CustomerCreateComponent {
     try {
       const res: any = await firstValueFrom(this.customerService.createCustomer(customer));
       const customerId = res.id;
-      console.log('Customer created:', customerId);
 
       this.message = 'Waiting for account to be ready...';
-
       const summary = await this.waitForCustomerSummary(customerId);
 
       if (!summary) {
@@ -69,15 +80,13 @@ export class CustomerCreateComponent {
         return;
       }
 
-      // Redirect to account details page
       this.loading = false;
       this.message = '';
       this.router.navigate(['/customer-accounts', customerId]);
-
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating customer', err);
       this.loading = false;
-      this.message = 'Failed to create customer. Please try again.';
+      this.message = err.message || 'Failed to create customer. Please try again.'; // Backend error displayed here
     }
   }
 
@@ -89,20 +98,13 @@ export class CustomerCreateComponent {
     for (let i = 0; i < retries; i++) {
       try {
         const summary: any = await firstValueFrom(this.accountService.getCustomerSummary(customerId));
-
-        // Normalize accounts property to lowercase
         summary.accounts = summary.accounts || summary.Accounts || [];
-
-        if (summary.accounts.length > 0) {
-          return summary; // Summary ready
-        }
+        if (summary.accounts.length > 0) return summary;
       } catch (err: any) {
         if (err.status !== 404) console.error(err);
       }
-
       await new Promise(r => setTimeout(r, intervalMs));
     }
-
-    return null; // Retry exhausted
+    return null;
   }
 }
