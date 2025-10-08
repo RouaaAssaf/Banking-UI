@@ -1,30 +1,19 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 import { CustomerService } from '../../../core/services/customer.service';
 import { AccountService } from '../../../core/services/account.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { SharedModule } from '../../../../app/shared/shared.module';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+
+
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    MatProgressBarModule
-  ],
+  imports: [SharedModule],
   templateUrl: './customer-create.component.html',
   styleUrls: ['./customer-create.component.scss']
 })

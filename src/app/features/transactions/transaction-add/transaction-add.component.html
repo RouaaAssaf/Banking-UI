@@ -1,44 +1,56 @@
-<!-- src/app/features/transactions/transaction-add/transaction-add.component.html -->
+<h2 mat-dialog-title>Add Transaction</h2>
 
-<div class="transaction-add-container">
-  <!-- Customer Search -->
-  <div class="customer-search">
-    <h3>Select Customer</h3>
-    <app-customer-search (customerSelected)="onCustomerSelected($event)"></app-customer-search>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="transaction-form">
+
+  <!-- Amount & Type in one row -->
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" formControlName="amount" required />
+      <mat-error *ngIf="form.controls['amount'].hasError('required')">
+        Amount is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="transactionType" required>
+        <mat-option [value]="'Credit'">Credit</mat-option>
+        <mat-option [value]="'Debit'">Debit</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls['transactionType'].hasError('required')">
+        Type is required
+      </mat-error>
+    </mat-form-field>
   </div>
 
-  <!-- Customer Summary (only visible when customer is selected) -->
-  <div class="customer-summary" *ngIf="selectedCustomerId && summary">
-    <h3>Customer Summary</h3>
-    <app-customer-summary [summary]="summary"></app-customer-summary>
+  <!-- Date -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="date" required />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="form.controls['date'].hasError('required')">
+      Date is required
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"></textarea>
+  </mat-form-field>
+
+  <!-- Buttons -->
+  <div class="actions">
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+      <mat-icon>check</mat-icon>
+      Save
+    </button>
+    <button mat-button type="button" (click)="dialogRef.close()">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
   </div>
 
-  <!-- Transaction Form (only visible when customer is selected) -->
-  <div class="transaction-form" *ngIf="selectedCustomerId">
-    <h3>Add Transaction</h3>
-    <form [formGroup]="form" (ngSubmit)="submitTransaction()">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Amount</mat-label>
-        <input matInput formControlName="amount" type="number" />
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Type</mat-label>
-        <select matNativeControl formControlName="type">
-          <option value="">Select type</option>
-          <option value="credit">Credit</option>
-          <option value="debit">Debit</option>
-        </select>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Description</mat-label>
-        <input matInput formControlName="description" />
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-        Submit Transaction
-      </button>
-    </form>
-  </div>
-</div>
+</form>

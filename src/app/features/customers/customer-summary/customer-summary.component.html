@@ -1,6 +1,18 @@
-<h2>Customer Summary</h2>
-<ul>
-  <li *ngFor="let c of customers">
-    {{ c.firstName }} {{ c.lastName }}
-  </li>
-</ul>
+<mat-card *ngFor="let account of accounts">
+  <mat-card-title>Account: {{ account.accountId }}</mat-card-title>
+  <mat-card-subtitle>Balance: {{ account.balance | currency }}</mat-card-subtitle>
+
+  <h4>Transactions</h4>
+  <mat-list *ngIf="account.transactions?.length; else noTx">
+    <mat-list-item *ngFor="let tx of account.transactions">
+      <mat-icon [color]="tx.transactionType === 'Credit' ? 'primary' : 'warn'">
+        {{ tx.transactionType === 'Credit' ? 'arrow_downward' : 'arrow_upward' }}
+      </mat-icon>
+      {{ tx.description }} - {{ tx.amount | currency }} - {{ tx.createdAt | date:'short' }}
+    </mat-list-item>
+  </mat-list>
+
+  <ng-template #noTx>
+    <p>No transactions yet.</p>
+  </ng-template>
+</mat-card>

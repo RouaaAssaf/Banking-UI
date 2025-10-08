@@ -1,54 +1,6 @@
-
+<!-- Error Message -->
 <div *ngIf="errorMessage" class="error-text">
   {{ errorMessage }}
-</div>
-<div class="account-details-container" *ngIf="!loading && account">
-
-  
-  <!-- Account Header Card -->
-  <mat-card class="account-header-card">
-    <mat-card-title>Account Details</mat-card-title>
-    <mat-card-subtitle>
-      <div class="info-line"><strong>Account ID:</strong> {{ account.accountId }}</div>
-      <div class="info-line"><strong>Customer:</strong> {{ account.firstName }} {{ account.lastName }}</div>
-      <div class="info-line"><strong>Opened At:</strong> {{ account.openedAt | date:'mediumDate' }}</div>
-    </mat-card-subtitle>
-
-    <div class="balance">
-      <h2>Balance</h2>
-      <h1 [class.positive]="account.balance >= 0" [class.negative]="account.balance < 0">
-        {{ account.balance | currency:'USD' }}
-      </h1>
-    </div>
-
-    <button mat-raised-button color="primary" class="add-btn" (click)="openAddTransactionDialog(account.accountId)">
-      <mat-icon>add</mat-icon>
-      Add Transaction
-    </button>
-  </mat-card>
-
-  <!-- Transactions Section -->
-  <mat-card class="transactions-card">
-    <mat-card-title>Recent Transactions</mat-card-title>
-
-    <mat-list *ngIf="account.transactions?.length; else noTx">
-      <mat-list-item *ngFor="let tx of account.transactions">
-        <mat-icon matListIcon [color]="tx.transactionType === 'Credit' ? 'primary' : 'warn'">
-          {{ tx.transactionType === 'Credit' ? 'arrow_downward' : 'arrow_upward' }}
-        </mat-icon>
-        <div matLine>
-          {{ tx.description }} – {{ tx.amount | currency:'USD' }}
-        </div>
-        <div matLine class="tx-date">
-          {{ tx.transactionType }} • {{ tx.createdAt | date:'short' }}
-        </div>
-      </mat-list-item>
-    </mat-list>
-
-    <ng-template #noTx>
-      <p class="no-transactions">No transactions found for this account.</p>
-    </ng-template>
-  </mat-card>
 </div>
 
 <!-- Loading Spinner -->
@@ -56,3 +8,10 @@
   <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
   <p>Loading account details...</p>
 </div>
+
+<!-- Account Card -->
+<app-account-card
+  *ngIf="!loading && account"
+  [account]="account"
+  (addTransaction)="onAddTransaction($event)">
+</app-account-card>

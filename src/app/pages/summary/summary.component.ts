@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { CustomerService } from '../../core/services/customer.service';
 import { AccountService } from '../../core/services/account.service';
 import { CustomerSummary, Customer } from '../../../app/models/customer.model';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-summary',
@@ -11,10 +10,7 @@ import { CustomerSummary, Customer } from '../../../app/models/customer.model';
   styleUrls: ['./summary.component.scss'],
   
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ]
+  imports: [SharedModule],
 })
 export class SummaryComponent implements OnInit {
   customers: Customer[] = [];

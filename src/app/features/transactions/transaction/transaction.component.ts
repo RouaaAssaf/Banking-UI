@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SharedModule } from '../../../../app/shared/shared.module';
 import { TransactionSearchComponent } from '../transaction-search/transaction-search.component';
-import { MatCardModule } from '@angular/material/card';
+
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CommonModule, MatCardModule, TransactionSearchComponent],
+  imports: [SharedModule,TransactionSearchComponent],
   template: `
     <app-transaction-search (accountClicked)="onAccountSelected($event)"></app-transaction-search>
   `

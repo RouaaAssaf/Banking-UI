@@ -1,22 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { SharedModule } from '../../../../app/shared/shared.module';
+
 
 @Component({
   selector: 'app-transaction-search',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule
-  ],
+  imports: [SharedModule],
   template: `
     <mat-card>
       <form [formGroup]="form" (ngSubmit)="searchAccount()">

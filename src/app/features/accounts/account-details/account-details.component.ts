@@ -1,36 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedModule } from '../../../../app/shared/shared.module';
 import { AccountService } from '../../../core/services/account.service';
 import { TransactionAddComponent } from '../../transactions/transaction-add/transaction-add.component';
-import { TransactionIconPipe } from '../../../shared/pipes/transaction-icon.pipe';
-import { TransactionColorPipe } from '../../../shared/pipes/transaction-color.pipe';
-import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
-import { FilterTransactionsPipe } from '../../../shared/pipes/filter-transactions.pipe';
 import { AccountCardComponent } from '../account-card/account-card.component';
+
+
 
 
 
 @Component({
   selector: 'app-account-details',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatListModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    TransactionIconPipe,  
-    TransactionColorPipe , 
-    CurrencyFormatPipe
-  ],
+  imports: [SharedModule, AccountCardComponent],
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss']
 })
@@ -41,7 +24,6 @@ export class AccountDetailsComponent implements OnInit {
   loading = false;
   errorMessage: string | null = null;
 
-
   constructor(
     private route: ActivatedRoute,
     private accountService: AccountService,
@@ -49,64 +31,57 @@ export class AccountDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.route.paramMap.subscribe(params => {
-    this.customerId = params.get('customerId');
-    this.accountId = params.get('accountId');
+    this.route.paramMap.subscribe(params => {
+      this.customerId = params.get('customerId');
+      this.accountId = params.get('accountId');
 
-    if (this.customerId) {
-      this.loadAccountByCustomer();
-    } else if (this.accountId) {
-      this.loadAccountByAccountId();
-    } else {
-      console.error('No customerId or accountId provided in route');
-    }
-  });
-}
-
+      if (this.customerId) {
+        this.loadAccountByCustomer();
+      } else if (this.accountId) {
+        this.loadAccountByAccountId();
+      } else {
+        this.errorMessage = 'No customerId or accountId provided in route';
+      }
+    });
+  }
 
   loadAccountByCustomer() {
-  this.loading = true;
-  this.errorMessage = null;
+    this.loading = true;
+    this.errorMessage = null;
 
-  this.accountService.getCustomerSummary(this.customerId!).subscribe({
-    next: summary => {
-      if (summary?.accounts?.length > 0) {
-        this.account = summary.accounts[0];
+    this.accountService.getCustomerSummary(this.customerId!).subscribe({
+      next: summary => {
+        if (summary?.accounts?.length > 0) {
+          this.account = summary.accounts[0];
+        } else {
+          this.errorMessage = 'No accounts found for this customer';
+        }
+        this.loading = false;
+      },
+      error: err => {
+        this.errorMessage = err.error?.Message || 'Failed to load account summary';
+        this.loading = false;
       }
-      this.loading = false;
-    },
-    error: err => {
-      console.error('Error loading account summary', err);
+    });
+  }
 
-      if (err.error?.Message) {
-        this.errorMessage = err.error.Message;
-      } else {
-        this.errorMessage = 'Failed to load account summary';
+  loadAccountByAccountId() {
+    this.loading = true;
+    this.errorMessage = null;
+
+    this.accountService.getAccountById(this.accountId!).subscribe({
+      next: acc => {
+        this.account = acc;
+        this.loading = false;
+      },
+      error: err => {
+        this.errorMessage = err.error?.Message || 'Failed to load account';
+        this.loading = false;
       }
+    });
+  }
 
-      this.loading = false;
-    }
-  });
-}
-
- loadAccountByAccountId() {
-  this.loading = true;
-  this.errorMessage = null;
-
-  this.accountService.getAccountById(this.accountId!).subscribe({
-    next: acc => {
-      this.account = acc;
-      this.loading = false;
-    },
-    error: err => {
-      this.loading = false;
-      this.errorMessage = err.message; // always shows JSON error from backend
-    }
-  });
-}
-
-
-  openAddTransactionDialog(accountId: string) {
+  onAddTransaction(accountId: string) {
     const dialogRef = this.dialog.open(TransactionAddComponent, {
       width: '400px',
       data: { accountId }
@@ -114,7 +89,7 @@ export class AccountDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
-        // Reload account, depending on how it was loaded
+        // Reload account after adding transaction
         if (this.customerId) {
           this.loadAccountByCustomer();
         } else if (this.accountId) {
