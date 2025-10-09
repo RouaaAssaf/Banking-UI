@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../../core/services/customer.service';
 import { AccountService } from '../../core/services/account.service';
+import { TransactionService } from '../../core/services/transaction.service';
 import { CustomerSummary, Customer } from '../../../app/models/customer.model';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -8,7 +9,6 @@ import { SharedModule } from '../../shared/shared.module';
   selector: 'app-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
-  
   standalone: true,
   imports: [SharedModule],
 })
@@ -16,23 +16,27 @@ export class SummaryComponent implements OnInit {
   customers: Customer[] = [];
   selectedCustomerId: string | null = null;
   summary: CustomerSummary | null = null;
+   accounts: any[] = [];
+  errorMessage: string | null = null;
   loading = false;
   error: string | null = null;
 
   constructor(
     private customerService: CustomerService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private transactionService: TransactionService
   ) {}
 
- ngOnInit(): void {
-  this.customerService.getAll().subscribe({
-    next: res => {
-      console.log('Loaded customers:', res); // <-- ADD THIS
-      this.customers = res;
-    },
-    error: err => console.error(err)
-  });
-}
+  ngOnInit(): void {
+    this.customerService.getAll().subscribe({
+      next: res => {
+        console.log('Loaded customers:', res);
+        this.customers = res;
+      },
+      error: err => console.error(err)
+    });
+  }
+
   onCustomerChange() {
     if (!this.selectedCustomerId) return;
 
@@ -51,4 +55,79 @@ export class SummaryComponent implements OnInit {
       }
     });
   }
+
+  // ✅ DELETE CUSTOMER
+  deleteCustomer(customerId: string) {
+    if (confirm('Are you sure you want to delete this customer and all related data?')) {
+      this.customerService.delete(customerId).subscribe({
+        next: () => {
+          alert('Customer deleted successfully.');
+          this.customers = this.customers.filter(c => c.customerId !== customerId);
+          this.summary = null;
+          this.selectedCustomerId = null;
+        },
+        error: err => {
+          console.error(err);
+          alert('Failed to delete customer.');
+        }
+      });
+    }
+  }
+  loadAccounts(): void {
+    this.loading = true;
+    this.accountService.getAllAccounts().subscribe({
+      next: (data) => {
+        this.accounts = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message || 'Failed to load accounts';
+        this.loading = false;
+      }
+    });
+  }
+
+
+  // ✅ DELETE ACCOUNT
+  deleteAccount(accountId: string) {
+    if (confirm('Are you sure you want to delete this account?')) {
+      this.accountService.deleteAccount(accountId).subscribe({
+        next: () => {
+          if (this.summary) {
+            this.summary.accounts = this.summary.accounts.filter(a => a.accountId !== accountId);
+          }
+          alert('Account deleted successfully.');
+          this.loadAccounts(); 
+        },
+        error: err => {
+          console.error(err);
+          alert('Failed to delete account.');
+        }
+      });
+    }
+  }
+
+  
+   deleteTransaction(accountId: string, transactionId: string) {
+  if (!confirm('Are you sure you want to delete this transaction?')) return;
+
+  console.log('Deleting transaction:', transactionId, 'from account:', accountId);
+
+  this.transactionService.deleteTransaction(transactionId).subscribe({
+    next: () => {
+      // remove transaction from UI
+      const account = this.summary?.accounts.find(a => a.accountId === accountId);
+      if (account) {
+        account.transactions = account.transactions.filter(t => t.transactionId !== transactionId);
+      }
+      alert('Transaction deleted successfully.');
+    },
+    error: (err) => {
+      console.error('Delete transaction error:', err);
+      alert(`Failed to delete transaction: ${err}`);
+    }
+  });
+}
+
+
 }

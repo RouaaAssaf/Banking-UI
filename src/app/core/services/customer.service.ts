@@ -45,4 +45,9 @@ export class CustomerService {
   );
 }
 
+delete(accountId: string) {
+  return this.http.delete(`https://localhost:44394/api/accounts/${accountId}`);
+}
+
+
 }

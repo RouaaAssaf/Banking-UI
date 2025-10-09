@@ -142,4 +142,23 @@
       }
     }
   }
+  .customer-card button {
+  margin-top: 10px;
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 8px;
+}
+
+.transaction-table td:last-child {
+  text-align: center;
+}
+
 }

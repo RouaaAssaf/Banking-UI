@@ -81,4 +81,14 @@ export class AccountService {
       })
     );
   }
+  deleteAccount(accountId: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${accountId}`).pipe(
+    catchError(err => {
+      const msg = err.error?.message || 'Failed to delete account';
+      console.error('Error in deleteAccount:', msg);
+      return throwError(() => new Error(msg));
+    })
+  );
+}
+
 }

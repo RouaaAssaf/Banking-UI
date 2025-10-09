@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TransactionService, TransactionRequest } from '../../../core/services/transaction.service';
-import { SharedModule } from '../../../../app/shared/shared.module';
-
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-transaction-add',
@@ -25,9 +24,8 @@ export class TransactionAddComponent {
   ) {
     this.form = this.fb.group({
       amount: ['', Validators.required],
-      transactionType: ['', Validators.required],
-      description: [''],
-      date: [new Date(), Validators.required]
+      transactionType: [0, Validators.required], // 0 = Credit, 1 = Debit
+      description: ['']
     });
   }
 
@@ -42,7 +40,7 @@ export class TransactionAddComponent {
         this.dialogRef.close('success');
       },
       error: (err) => {
-        this.snackBar.open(`Error: ${err.error?.Message || 'Failed to add transaction'}`, 'Close', { duration: 4000 });
+        this.snackBar.open(`Error: ${err.error?.message || 'Failed to add transaction'}`, 'Close', { duration: 4000 });
       }
     });
   }
