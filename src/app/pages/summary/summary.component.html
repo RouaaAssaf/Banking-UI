@@ -1,17 +1,24 @@
 <div class="summary-container">
   <h2 class="page-title">Customer Summary</h2>
 
-  <!-- Customer Dropdown -->
-  <div class="customer-selector">
-    <label for="customerSelect">Select Customer:</label>
-    <select id="customerSelect" [(ngModel)]="selectedCustomerId" (change)="onCustomerChange()">
-      <option [value]="null">-- Select Customer --</option>
-      <option *ngFor="let c of customers" [value]="c.customerId">
-        {{ c.firstName }} {{ c.lastName }}
-      </option>
-    </select>
-  </div>
+ <!-- Customer Selection -->
+  <div class="customer-selection">
+    <mat-form-field appearance="fill" class="customer-select">
+      <mat-label>Select Customer</mat-label>
+      <mat-select [(value)]="selectedCustomerId" (selectionChange)="onCustomerChange()">
+        <mat-option [value]="null">-- Select Customer --</mat-option>
+        <mat-option *ngFor="let c of customers" [value]="c.customerId">
+          {{ c.firstName }} {{ c.lastName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <button mat-flat-button color="primary" [disabled]="!selectedCustomerId" class="search-btn" (click)="onCustomerChange()">
+      <mat-icon>search</mat-icon>
+      Search
+    </button>
+  </div>
+  
   <!-- Loading and Error -->
   <div *ngIf="loading" class="loading">Loading summary...</div>
   <div *ngIf="error" class="error">{{ error }}</div>

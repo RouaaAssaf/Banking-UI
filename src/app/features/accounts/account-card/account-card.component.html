@@ -14,7 +14,7 @@
       <div class="balance-box">
         <h2>Balance</h2>
         <h1 [class.positive]="account.balance >= 0" [class.negative]="account.balance < 0">
-          {{ account.balance | currency:'USD' }}
+            {{ account.balance | currencyFormat }}
         </h1>
       </div>
     </div>
@@ -45,7 +45,7 @@
         <!-- Type Column -->
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let tx">{{ tx.transactionType }}</td>
+          <td mat-cell *matCellDef="let tx">{{ tx.transactionType | transactionType }}</td>
         </ng-container>
 
         <!-- Amount Column -->
@@ -55,7 +55,7 @@
               credit: tx.transactionType === 'Credit',
               debit: tx.transactionType === 'Debit'
             }">
-            {{ tx.amount | currency:'USD' }}
+               {{ account.balance | currencyFormat }}
           </td>
         </ng-container>
 

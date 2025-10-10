@@ -1,0 +1,19 @@
+<mat-card class="transaction-search-card mat-elevation-z6">
+  <h2 class="card-title">Search Account</h2>
+
+  <form [formGroup]="form" (ngSubmit)="searchAccount()" class="search-form">
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Enter Account ID</mat-label>
+      <mat-icon matPrefix>account_balance</mat-icon>
+      <input matInput placeholder="Account ID" formControlName="accountId" />
+      <mat-error *ngIf="form.get('accountId')?.hasError('required')">
+        Account ID is required
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" class="search-btn" type="submit" [disabled]="form.invalid">
+      <mat-icon>search</mat-icon>
+      Search
+    </button>
+  </form>
+</mat-card>

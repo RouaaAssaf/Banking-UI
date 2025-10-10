@@ -1,14 +1,14 @@
-<mat-card *ngFor="let account of accounts">
+<mat-card *ngFor="let account of accounts" [appHighlight]="account.balance < 100">
   <mat-card-title>Account: {{ account.accountId }}</mat-card-title>
-  <mat-card-subtitle>Balance: {{ account.balance | currency }}</mat-card-subtitle>
+  <mat-card-subtitle>Balance: {{ account.balance | currencyFormat }}</mat-card-subtitle>
 
   <h4>Transactions</h4>
   <mat-list *ngIf="account.transactions?.length; else noTx">
     <mat-list-item *ngFor="let tx of account.transactions">
       <mat-icon [color]="tx.transactionType === 'Credit' ? 'primary' : 'warn'">
-        {{ tx.transactionType === 'Credit' ? 'arrow_downward' : 'arrow_upward' }}
+        {{ tx.transactionType | transactionIcon }}
       </mat-icon>
-      {{ tx.description }} - {{ tx.amount | currency }} - {{ tx.createdAt | date:'short' }}
+      {{ tx.description }} - {{ tx.amount | currencyFormat }} - {{ tx.createdAt | date:'short' }}
     </mat-list-item>
   </mat-list>
 

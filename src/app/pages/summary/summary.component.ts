@@ -56,6 +56,12 @@ export class SummaryComponent implements OnInit {
     });
   }
 
+loadCustomers(): void {
+  this.customerService.getAll().subscribe({
+    next: (data) => this.customers = data,
+    error: (err) => this.errorMessage = err.message || 'Failed to load customers'
+  });
+}
 
   deleteCustomer(customerId: string): void {
     if (confirm('Are you sure you want to delete this customer and all related accounts and transactions?')) {
@@ -64,6 +70,7 @@ export class SummaryComponent implements OnInit {
         next: () => {
           this.customers = this.customers.filter(c => c.customerId !== customerId);
           alert('Customer and related data deleted successfully!');
+          this.loadCustomers();
           this.loading = false;
         },
         error: (err) => {
