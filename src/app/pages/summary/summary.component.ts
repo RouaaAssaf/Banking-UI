@@ -57,22 +57,23 @@ export class SummaryComponent implements OnInit {
   }
 
 
-  deleteCustomer(customerId: string) {
-    if (confirm('Are you sure you want to delete this customer and all related data?')) {
-      this.customerService.delete(customerId).subscribe({
+  deleteCustomer(customerId: string): void {
+    if (confirm('Are you sure you want to delete this customer and all related accounts and transactions?')) {
+      this.loading = true;
+      this.customerService.deleteCustomer(customerId).subscribe({
         next: () => {
-          alert('Customer deleted successfully.');
           this.customers = this.customers.filter(c => c.customerId !== customerId);
-          this.summary = null;
-          this.selectedCustomerId = null;
+          alert('Customer and related data deleted successfully!');
+          this.loading = false;
         },
-        error: err => {
-          console.error(err);
-          alert('Failed to delete customer.');
+        error: (err) => {
+          alert(err.message || 'Failed to delete customer.');
+          this.loading = false;
         }
       });
     }
   }
+
   loadAccounts(): void {
     this.loading = true;
     this.accountService.getAllAccounts().subscribe({

@@ -42,6 +42,12 @@ export class CustomerService {
       return throwError(() => new Error(message));
     };
   }
+   deleteCustomer(customerId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${customerId}`)
+      .pipe(catchError(this.handleError('Failed to delete customer')));
+  }
+
+  
 
 
 delete(accountId: string) {
