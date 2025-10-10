@@ -22,7 +22,7 @@ export interface Account {
 }
 
 export interface Transaction {
-  transactionId: string;
+  TransactionId: string;
   amount: number;
   transactionType: string;
   description: string;

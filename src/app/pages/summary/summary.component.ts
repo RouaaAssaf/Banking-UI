@@ -16,7 +16,7 @@ export class SummaryComponent implements OnInit {
   customers: Customer[] = [];
   selectedCustomerId: string | null = null;
   summary: CustomerSummary | null = null;
-   accounts: any[] = [];
+  accounts: any[] = [];
   errorMessage: string | null = null;
   loading = false;
   error: string | null = null;
@@ -56,7 +56,7 @@ export class SummaryComponent implements OnInit {
     });
   }
 
-  // ✅ DELETE CUSTOMER
+
   deleteCustomer(customerId: string) {
     if (confirm('Are you sure you want to delete this customer and all related data?')) {
       this.customerService.delete(customerId).subscribe({
@@ -108,17 +108,23 @@ export class SummaryComponent implements OnInit {
   }
 
   
-   deleteTransaction(accountId: string, transactionId: string) {
+  deleteTransaction(accountId: string, transactionId: string) {
   if (!confirm('Are you sure you want to delete this transaction?')) return;
-
-  console.log('Deleting transaction:', transactionId, 'from account:', accountId);
 
   this.transactionService.deleteTransaction(transactionId).subscribe({
     next: () => {
-      // remove transaction from UI
       const account = this.summary?.accounts.find(a => a.accountId === accountId);
       if (account) {
-        account.transactions = account.transactions.filter(t => t.transactionId !== transactionId);
+        const deletedTx = account.transactions.find(t => t.TransactionId === transactionId);
+        if (deletedTx) {
+          // Adjust balance locally for instant feedback
+          if (deletedTx.transactionType === 'Credit') {
+            account.balance -= deletedTx.amount;
+          } else if (deletedTx.transactionType === 'Debit') {
+            account.balance += deletedTx.amount;
+          }
+        }
+        account.transactions = account.transactions.filter(t => t.TransactionId !== transactionId);
       }
       alert('Transaction deleted successfully.');
     },

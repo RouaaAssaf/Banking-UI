@@ -13,7 +13,7 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
  getDashboardData(): Observable<DashboardSummary> {
-    // Make sure the type matches the backend response exactly
+   
     return this.http.get<DashboardSummary>(`${this.apiUrl}/summary`);
   }
 }

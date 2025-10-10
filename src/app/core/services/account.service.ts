@@ -12,6 +12,14 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
+  private handleError(msg: string) {
+    return (error: any) => {
+      const message = error?.error?.Message || error?.message || msg;
+      console.error('AccountService Error:', message);
+      return throwError(() => new Error(message));
+    };
+  }
+
   getCustomerSummary(customerId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/customers/${customerId}/summary`).pipe(
       map(res => ({
@@ -23,6 +31,7 @@ export class AccountService {
           balance: acc.Balance,
           openedAt: acc.OpenedAt,
           transactions: acc.Transactions.map((tx: any) => ({
+            TransactionId: tx.TransactionId,
             transactionType: tx.TransactionType,
             amount: tx.Amount,
             description: tx.Description,
@@ -30,32 +39,18 @@ export class AccountService {
           }))
         }))
       })),
-      catchError(err => {
-        const msg = err.error?.message || 'Failed to load customer summary';
-        console.error('Error in getCustomerSummary:', msg);
-        return throwError(() => new Error(msg));
-      })
-    );
-  }
+      catchError(this.handleError('Failed to load customer summary'))
+    );}
 
   addTransaction(accountId: string, request: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${accountId}/transaction`, request).pipe(
-      catchError(err => {
-        const msg = err.error?.message || 'Failed to add transaction';
-        console.error('Error in addTransaction:', msg);
-        return throwError(() => new Error(msg));
-      })
-    );
+    return this.http.post(`${this.apiUrl}/${accountId}/transaction`, request)
+     .pipe(catchError(this.handleError('Failed to add transaction')));
+    
   }
 
   getAllAccounts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`).pipe(
-      catchError(err => {
-        const msg = err.error?.message || 'Failed to load accounts';
-        console.error('Error in getAllAccounts:', msg);
-        return throwError(() => new Error(msg));
-      })
-    );
+    return this.http.get<any[]>(`${this.apiUrl}`)
+     .pipe(catchError(this.handleError('Failed to load accounts')));
   }
 
   getAccountById(accountId: string): Observable<any> {
@@ -74,21 +69,13 @@ export class AccountService {
           createdAt: tx.CreatedAt
         }))
       })),
-      catchError(err => {
-        const msg = err.error?.message || 'Failed to load account,please enter valid accountId';
-        console.error('Error in getAccountById:', msg);
-        return throwError(() => new Error(msg));
-      })
+       catchError(this.handleError('Failed to load account by ID'))
     );
   }
   deleteAccount(accountId: string): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/${accountId}`).pipe(
-    catchError(err => {
-      const msg = err.error?.message || 'Failed to delete account';
-      console.error('Error in deleteAccount:', msg);
-      return throwError(() => new Error(msg));
-    })
-  );
+  return this.http.delete(`${this.apiUrl}/${accountId}`) 
+    .pipe(catchError(this.handleError('Failed to delete account')));
+  }
 }
 
-}
+

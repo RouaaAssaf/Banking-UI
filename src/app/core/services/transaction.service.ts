@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 
+
 export interface TransactionRequest {
   amount: number;
   transactionType: number; // 0 = Credit, 1 = Debit
@@ -25,17 +26,21 @@ export class TransactionService {
   }
 
   getTransactionsToday() {
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  return this.http.get<any[]>(`api/transactions?date=${today}`);
+  const today = new Date().toISOString().split('T')[0]; 
+  return this.http.get<any[]>(`api/transactions?date=${today}`)
+   .pipe(catchError(this.handleError('Failed to load today\'s transactions')));
 }
- deleteTransaction(transactionId: string): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/delete/${transactionId}`).pipe(
-    catchError(err => {
-      const msg = err.error?.Message || err.message || 'Failed to delete transaction';
-      console.error('Error in deleteTransaction:', msg);
-      return throwError(() => msg); // return the message directly
-    })
-  );
-}
+ deleteTransaction(transactionId: string) {
+    return this.http.delete(`${this.apiUrl}/delete/${transactionId}`)
+      .pipe(catchError(this.handleError('Failed to delete transaction')));
+  }
+
+ private handleError(msg: string) {
+    return (error: any) => {
+      const message = error?.error?.Message || error?.message || msg;
+      console.error(message, error);
+      return throwError(() => new Error(message));
+    };
+  }
 
 }

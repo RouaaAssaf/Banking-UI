@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
     const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
 
     if (!isLoggedIn) {
-      // 🧠 'replaceUrl: true' prevents back button from returning to protected routes
+      
       this.router.navigate(['/login'], { replaceUrl: true });
       return false;
     }
