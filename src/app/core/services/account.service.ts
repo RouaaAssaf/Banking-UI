@@ -1,10 +1,10 @@
+// src/app/core/services/account.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CustomerSummary, Account, Transaction } from '../../models/customer.model';
-import { AddTransactionRequest } from '../../models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,39 +23,35 @@ export class AccountService {
     };
   }
 
+  // Helper: map backend PascalCase → frontend camelCase
+  private mapTransactionBackendToFrontend(tx: any): Transaction {
+    return {
+      transactionId: tx.TransactionId,
+      amount: tx.Amount,
+      transactionType: tx.TransactionType,
+      description: tx.Description,
+      createdAt: tx.CreatedAt
+    };
+  }
+
   getCustomerSummary(customerId: string): Observable<CustomerSummary> {
     return this.http.get<any>(`${this.apiUrl}/customers/${customerId}/summary`).pipe(
       map(res => ({
         customerId: res.CustomerId,
         firstName: res.FirstName,
         lastName: res.LastName,
-        accounts: res.Accounts.map((acc: any): Account => ({
+        accounts: (res.Accounts || []).map((acc: any): Account => ({
           accountId: acc.AccountId,
+          customerId: acc.CustomerId,
+          firstName: acc.FirstName,
+          lastName: acc.LastName,
           balance: acc.Balance,
           openedAt: acc.OpenedAt,
-          transactions: (acc.Transactions || []).map((tx: any): Transaction => ({
-            TransactionId: tx.TransactionId,
-            transactionType: tx.TransactionType,
-            amount: tx.Amount,
-            description: tx.Description,
-            createdAt: tx.CreatedAt
-          }))
+          transactions: (acc.Transactions || []).map(this.mapTransactionBackendToFrontend)
         }))
       })),
       catchError(this.handleError('Failed to load customer summary'))
     );
-  }
-
-  addTransaction(accountId: string, request: AddTransactionRequest): Observable<Transaction> {
-    return this.http
-      .post<Transaction>(`${this.apiUrl}/${accountId}/transaction`, request)
-      .pipe(catchError(this.handleError('Failed to add transaction')));
-  }
-
-  getAllAccounts(): Observable<Account[]> {
-    return this.http
-      .get<Account[]>(`${this.apiUrl}`)
-      .pipe(catchError(this.handleError('Failed to load accounts')));
   }
 
   getAccountById(accountId: string): Observable<Account> {
@@ -67,21 +63,31 @@ export class AccountService {
         lastName: acc.LastName,
         balance: acc.Balance,
         openedAt: acc.OpenedAt,
-        transactions: (acc.Transactions || []).map((tx: any): Transaction => ({
-          TransactionId: tx.TransactionId,
-          transactionType: tx.TransactionType,
-          amount: tx.Amount,
-          description: tx.Description,
-          createdAt: tx.CreatedAt
-        }))
+        transactions: (acc.Transactions || []).map(this.mapTransactionBackendToFrontend)
       })),
       catchError(this.handleError('Failed to load account by ID'))
     );
   }
 
+  getAllAccounts(): Observable<Account[]> {
+    return this.http.get<any[]>(`${this.apiUrl}`).pipe(
+      map(accounts =>
+        accounts.map(acc => ({
+          accountId: acc.AccountId,
+          customerId: acc.CustomerId,
+          firstName: acc.FirstName,
+          lastName: acc.LastName,
+          balance: acc.Balance,
+          openedAt: acc.OpenedAt,
+          transactions: (acc.Transactions || []).map(this.mapTransactionBackendToFrontend)
+        }))
+      ),
+      catchError(this.handleError('Failed to load accounts'))
+    );
+  }
+
   deleteAccount(accountId: string): Observable<void> {
-    return this.http
-      .delete<void>(`${this.apiUrl}/${accountId}`)
+    return this.http.delete<void>(`${this.apiUrl}/${accountId}`)
       .pipe(catchError(this.handleError('Failed to delete account')));
   }
 }

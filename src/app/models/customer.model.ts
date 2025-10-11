@@ -16,15 +16,23 @@ export interface CustomerSummary {
 
 export interface Account {
   accountId: string;
+  customerId?: string;  
+  firstName?: string;   
+  lastName?: string;    
   balance: number;
   openedAt: string;
   transactions: Transaction[];
 }
 
+
 export interface Transaction {
-  TransactionId: string;
+  transactionId: string;
   amount: number;
-  transactionType: string;
+  transactionType: 'Credit' | 'Debit';
   description: string;
   createdAt: string;
+  status?: 'Pending' | 'Completed' | 'Failed';
 }
+
+
+

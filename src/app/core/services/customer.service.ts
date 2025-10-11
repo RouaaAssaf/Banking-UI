@@ -38,9 +38,7 @@ export class CustomerService {
       .pipe(catchError(this.handleError('Failed to delete customer')));
   }
 
-  delete(accountId: string): Observable<void> {
-    return this.http.delete<void>(`https://localhost:44394/api/accounts/${accountId}`);
-  }
+ 
 
   private handleError(msg: string) {
     return (error: unknown) => {

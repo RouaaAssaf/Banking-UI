@@ -123,7 +123,7 @@ loadCustomers(): void {
     next: () => {
       const account = this.summary?.accounts.find(a => a.accountId === accountId);
       if (account) {
-        const deletedTx = account.transactions.find(t => t.TransactionId === transactionId);
+        const deletedTx = account.transactions.find(t => t.transactionId === transactionId);
         if (deletedTx) {
           // Adjust balance locally for instant feedback
           if (deletedTx.transactionType === 'Credit') {
@@ -132,7 +132,7 @@ loadCustomers(): void {
             account.balance += deletedTx.amount;
           }
         }
-        account.transactions = account.transactions.filter(t => t.TransactionId !== transactionId);
+        account.transactions = account.transactions.filter(t => t.transactionId !== transactionId);
       }
       alert('Transaction deleted successfully.');
     },

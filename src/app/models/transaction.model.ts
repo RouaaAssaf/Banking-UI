@@ -1,14 +1,15 @@
+// transaction.model.ts
 export interface AddTransactionRequest {
-  Amount: number;
-  TransactionType: 'Credit' | 'Debit';
-  Description: string;
-}
-export interface Transaction {
-  TransactionId: string;
-  Amount: number;
-  TransactionType: 'Credit' | 'Debit';
-  Description: string;
-  CreatedAt: string;
-  Status?: 'Pending' | 'Completed' | 'Failed';
+  amount: number;
+  transactionType: 'Credit' | 'Debit';
+  description: string;
 }
 
+export interface Transaction {
+  transactionId: string;
+  amount: number;
+  transactionType: 'Credit' | 'Debit';
+  description: string;
+  createdAt: string;
+  status?: 'Pending' | 'Completed' | 'Failed';
+}
