@@ -55,7 +55,7 @@
               credit: tx.transactionType === 'Credit',
               debit: tx.transactionType === 'Debit'
             }">
-               {{ account.balance | currencyFormat }}
+               {{ tx.amount | currencyFormat }}
           </td>
         </ng-container>
 

@@ -2,7 +2,9 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TransactionService, TransactionRequest } from '../../../core/services/transaction.service';
+import { TransactionService } from '../../../core/services/transaction.service';
+import { AddTransactionRequest } from '../../../../app/models/transaction.model';
+
 import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
@@ -32,7 +34,7 @@ export class TransactionAddComponent {
   onSubmit() {
     if (this.form.invalid) return;
 
-    const tx: TransactionRequest = this.form.value;
+    const tx: AddTransactionRequest = this.form.value;
 
     this.transactionService.addTransaction(this.data.accountId, tx).subscribe({
       next: () => {

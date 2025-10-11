@@ -1,9 +1,9 @@
-// src/app/core/services/customer.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Customer } from '../../models/customer.model';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
@@ -11,48 +11,43 @@ export class CustomerService {
 
   constructor(private http: HttpClient) {}
 
-  createCustomer(customer: { firstName: string; lastName: string; email: string }) {
+  createCustomer(customer: Pick<Customer, 'firstName' | 'lastName' | 'email'>): Observable<{ id: string }> {
     return this.http.post<{ id: string }>(this.apiUrl, customer)
       .pipe(catchError(this.handleError('Failed to create customer')));
   }
 
-  findCustomerByEmail(email: string) {
-    return this.http.get<any>(`${this.apiUrl}/by-email/${email}`)
+  findCustomerByEmail(email: string): Observable<Customer> {
+    return this.http.get<Customer>(`${this.apiUrl}/by-email/${email}`)
       .pipe(catchError(this.handleError('Failed to find customer by email')));
   }
 
-  getAll() {
-    return this.http.get<any[]>(this.apiUrl)
-      .pipe(
-        map(res => res.map(c => ({
-          customerId: c.CustomerId,
-          firstName: c.FirstName,
-          lastName: c.LastName,
-          email: c.Email
-        }))),
-        catchError(this.handleError('Failed to fetch customers'))
-      );
+  getAll(): Observable<Customer[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(res => res.map(c => ({
+        customerId: c.CustomerId,
+        firstName: c.FirstName,
+        lastName: c.LastName,
+        email: c.Email
+      }))),
+      catchError(this.handleError('Failed to fetch customers'))
+    );
   }
 
-  // --- Helpers ---
-  private handleError(msg: string) {
-    return (error: any) => {
-      const message = error?.error?.message || msg;
-      console.error(message, error);
-      return throwError(() => new Error(message));
-    };
-  }
-   deleteCustomer(customerId: string): Observable<void> {
+  deleteCustomer(customerId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${customerId}`)
       .pipe(catchError(this.handleError('Failed to delete customer')));
   }
 
-  
+  delete(accountId: string): Observable<void> {
+    return this.http.delete<void>(`https://localhost:44394/api/accounts/${accountId}`);
+  }
 
-
-delete(accountId: string) {
-  return this.http.delete(`https://localhost:44394/api/accounts/${accountId}`);
-}
-
-
+  private handleError(msg: string) {
+    return (error: unknown) => {
+      const err = error as { error?: { message?: string }; message?: string };
+      const message = err?.error?.message || err?.message || msg;
+      console.error('CustomerService Error:', message);
+      return throwError(() => new Error(message));
+    };
+  }
 }

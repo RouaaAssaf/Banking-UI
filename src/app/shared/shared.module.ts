@@ -27,7 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { TransactionTypePipe } from './pipes/transaction-type.pipe';
 
 
-// Standalone Pipes & Directives
+
 import { TransactionIconPipe } from './pipes/transaction-icon.pipe';
 import { TransactionColorPipe } from './pipes/transaction-color.pipe';
 import { CurrencyFormatPipe } from './pipes/currency-format.pipe';
