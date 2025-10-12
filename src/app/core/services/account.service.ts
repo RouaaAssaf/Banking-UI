@@ -23,7 +23,7 @@ export class AccountService {
     };
   }
 
-  // Helper: map backend PascalCase → frontend camelCase
+  
   private mapTransactionBackendToFrontend(tx: any): Transaction {
     return {
       transactionId: tx.TransactionId,

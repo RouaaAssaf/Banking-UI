@@ -47,11 +47,6 @@ export class DashboardComponent implements OnInit {
   constructor(private router: Router, private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-  const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-  if (!isLoggedIn) {
-    this.router.navigate(['/login'], { replaceUrl: true });
-    return;
-  }
 
   this.adminName = localStorage.getItem('adminName');
   this.loadDashboard();
@@ -89,6 +84,7 @@ export class DashboardComponent implements OnInit {
   logout(): void {
     localStorage.removeItem('loggedIn');
     localStorage.removeItem('adminName');
+    debugger;
     this.router.navigate(['/login']);
   }
 }
