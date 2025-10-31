@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
-  apiUrlCustomers: 'https://localhost:44365/api/customers',
-  apiUrlAccounts: 'https://localhost:44394/api/accounts',
-  apiUrlDashboard: 'https://localhost:44394/api/dashboard' 
+  apiUrlCustomers: 'http://localhost:5001/api/customers',
+  apiUrlAccounts: 'http://localhost:5002/api/accounts',
+  apiUrlDashboard: 'http://localhost:5002/api/dashboard' 
   
   
 };
